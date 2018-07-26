@@ -65,11 +65,15 @@ for counter in range(counter_range):
     x_test = data[-1000:]
     y_test = data['Close'][-1000:]
     
+    #present_price = x_train['Close'][len(x_train)-1]
+    
     x_col = x_train.columns
     
     sc_X = MinMaxScaler(feature_range=(0, 1))
     x_train = sc_X.fit_transform(x_train)
     x_test = sc_X.transform(x_test)
+    
+    #present_price_scaled = x_t['Close'][len(x_train)-1]
     
     x_train = pd.DataFrame(data=x_train, columns=x_col)
     x_test = pd.DataFrame(data=x_test, columns=x_col)
@@ -115,16 +119,14 @@ for counter in range(counter_range):
     x_test_arr = np.array(x_data)
     
     predicted_price = model.predict(x_test_arr).reshape(-1)
-    #------------------------------------------------------------------------------
-    
     predicted_price_df = pd.DataFrame(data = predicted_price, columns = ['pred'])
-    predicted_price_df_future = predicted_price_df.shift(-1)[:-1]
-    predicted_price_df_present = predicted_price_df[:-1]
-    ret_pred = (predicted_price_df_future / predicted_price_df_present - 1) * 10000
-    ret_pred = np.array(ret_pred)
+    y_test_scaled_df = pd.DataFrame(y_test_scaled)
+    y_test_df = pd.DataFrame(y_test).reset_index(drop=True)
+  
+    ret_pred = (predicted_price_df['pred'] / x_test['Close'] - 1) * 10000
     
-    btcp = y_test[:-1].values
-    timestamp = timestamp[:-1]
+    plt.plot(ret_pred)
+    plt.show()
 
     buy = 0
     for var in range(len(ret_pred)):
@@ -154,19 +156,16 @@ for counter in range(counter_range):
     YY = np.concatenate((YY, btcp), axis = 0)
 
 
-
-
-plt.figure(figsize = (20,10))
 ax0 = plt.plot(YY, color = 'orange', linewidth = 0.8)
 ax1 = plt.scatter(xbuy, bp, color='g') #buy
 ax2 = plt.scatter(xsell, sp, color='r') #sell
 plt.legend((ax0, ax1, ax2), ('LTP', 'Bought', 'Sold'))
 
-
 df['Timestamp'] = cur_time
 df['Price'] =  tradeprice
 df['Return'] =  Return
 df['Action'] = action
+
 
 
 
