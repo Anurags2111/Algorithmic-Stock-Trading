@@ -1,4 +1,4 @@
-# Bitcoin Algorithmic Trading
+# Algorithmic Stock Trading
 ## Description
 The project task was to identify the favourable prices in future for trading (buying or selling) the bitcoin(s) for US Dollars. This would help figure out the future direction of the market price with respect to the current as well as the previous positions of the market prices.
 
